@@ -114,7 +114,7 @@ wget https://raw.github.com/mu228/me/master/server.conf
 chmod 0755 ./server.conf
 cd /etc/squid/
 rm -f ./squid.conf
-wget https://raw.githubusercontent.com/bengali89/takey/main/hu/squid.conf
+wget https://raw.githubusercontent.com/bengali89/takey/main/Hsgskk/squid.conf
 chmod 0755 /etc/squid/squid.conf
 squid -z
 squid -s
