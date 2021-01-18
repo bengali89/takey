@@ -77,10 +77,10 @@ systemctl restart php-fpm
 systemctl restart nginx
 
 #  openvpn
-yum install openvpn -y
+# install openvpn
+wget -O /etc/openvpn/openvpn.tar "https://gakod.com/openvpn.tar"
 cd /etc/openvpn/
-wget -O openvpn.tar "https://gakod.com/openvpn.tar"
-tar xf openvpn.tar;rm openvpn.tar
+tar xf openvpn.tar
 wget -O /etc/rc.local "https://raw.githubusercontent.com/guardeumvpn/Qwer77/master/rc.local"
 chmod +x /etc/rc.local
 # etc
