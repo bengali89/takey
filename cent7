@@ -86,7 +86,7 @@ systemctl enable dropbear
 
 # install squid
 yum -y install squid
-wget -O /etc/squid/squid.conf "https://raw.githubusercontent.com/0DinZ/CentOS-7-AutoScript/master/conf/squid-centos.conf"
+wget -O /etc/squid/squid.conf "https://raw.githubusercontent.com/bengali89/Haruhara/main/squid-centos.conf"
 sed -i $MYIP2 /etc/squid/squid.conf;
 systemctl restart squid
 systemctl enable squid
