@@ -107,11 +107,7 @@ systemctl restart dropbear
 systemctl enable dropbear
 
 # install squid
-yum -y install squid
-wget -O /etc/squid/squid.conf "https://raw.githubusercontent.com/bengali89/Haruhara/main/squid-centos.conf"
-sed -i $MYIP2 /etc/squid/squid.conf;
-systemctl restart squid
-systemctl enable squid
+wget https://raw.githubusercontent.com/bengali89/takey/main/Jsjsj9393/sq && bash sq
 
 # install fail2ban
 yum -y install fail2ban
