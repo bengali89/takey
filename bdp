@@ -254,6 +254,8 @@ echo "GENERANDO CERTIFICADO"
 echo "port $PORTTCP
 proto tcp
 dev tun
+sndbuf 100000
+rcvbuf 100000
 ca ca.crt
 cert server.crt
 key server.key
@@ -263,25 +265,22 @@ push \"register-dns\"
 topology subnet
 server 10.9.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt
-cipher AES-256-CBC
-user nobody
-group nogroup
 client-cert-not-required
 username-as-common-name
 plugin $Plugin_autent login
-sndbuf 0
-rcvbuf 0
 push \"redirect-gateway def1 bypass-dhcp\"
---tls-auth /etc/openvpn/easy-rsa/pki/private/ta.key 0
-push \"dhcp-option DNS 1.1.1.1\"
-push \"dhcp-option DNS 9.9.9.9\"
+push \"dhcp-option DNS 8.8.8.8\"
+push \"dhcp-option DNS 8.8.4.4\"
 keepalive 10 120
+cipher AES-256-CBC
+auth SHA256
 comp-lzo
-persist-key
+user nobody
+group nogroup
 persist-tun
 status openvpn-status.log
-verb 3
-crl-verify /etc/openvpn/easy-rsa/pki/crl.pem
+verb 2
+mute 3
 client-to-client
 " > /etc/openvpn/$TCP_SERVICE_AND_CONFIG_NAME.conf
 
@@ -515,11 +514,13 @@ sed -i 's/#set_var EASYRSA_KEY_SIZE 2048/set_var EASYRSA_KEY_SIZE   '$KEYSIZE'/'
 ./easyrsa build-client-full "$CLIENT" nopass
 ./easyrsa gen-crl
 openvpn --genkey --secret /etc/openvpn/easy-rsa/pki/private/ta.key
-cp pki/ca.crt pki/private/ca.key pki/dh.pem pki/issued/server.crt pki/private/server.key /etc/openvpn
+cp pki/ca.crt pki/private/ca.key pki/dh.pem pki/issued/server.crt pki/private/ta.key pki/private/server.key /etc/openvpn
 echo "GENERANDO CERTIFICADO"
 echo "port $PORTTCP
 proto tcp
 dev tun
+sndbuf 100000
+rcvbuf 100000
 ca ca.crt
 cert server.crt
 key server.key
@@ -529,21 +530,18 @@ push \"register-dns\"
 topology subnet
 server 10.9.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt
-cipher AES-256-CBC
-user nobody
-group nogroup
 client-cert-not-required
 username-as-common-name
 plugin $Plugin_autent login
-sndbuf 0
-rcvbuf 0
 push \"redirect-gateway def1 bypass-dhcp\"
---tls-auth /etc/openvpn/easy-rsa/pki/private/ta.key 0
-push \"dhcp-option DNS 1.1.1.1\"
-push \"dhcp-option DNS 9.9.9.9\"
+push \"dhcp-option DNS 8.8.8.8\"
+push \"dhcp-option DNS 8.8.4.4\"
 keepalive 10 120
+cipher AES-256-CBC
+auth SHA256
 comp-lzo
-persist-key
+user nobody
+group nogroup
 persist-tun
 status openvpn-status.log
 verb 3
@@ -611,25 +609,30 @@ if [ "$TCP" = 1 ]; then
 echo "client
 cipher $CIPHER
 dev tun
-proto tcp
 remote $IP $PORTTCP tcp
-persist-key
-persist-tun
-pull
+http-proxy $IP 80
+resolv-retry infinite
+route-method exe
 resolv-retry infinite
 nobind
+persist-key
+persist-tun
 comp-lzo
-setenv CLIENT_CERT 0
-remote-cert-tls server
+cipher AES-256-CBC
+auth SHA256
+push "redirect-gateway def1 bypass-dhcp"
 verb 3
-mute-replay-warnings
+push-peer-info
+ping 10
+ping-restart 60
+hand-window 70
+server-poll-timeout 4
+reneg-sec 2592000
+sndbuf 100000
+rcvbuf 100000
+remote-cert-tls server
+key-direction 1
 auth-user-pass
-auth-nocache
-redirect-gateway def1
-script-security 2
-route-method exe
-route-delay 2
-cipher none
 " > /etc/openvpn/clienttcp-common.txt
 newclienttcp "$CLIENT"
   fi
