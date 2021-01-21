@@ -117,8 +117,10 @@ cert server.crt
 key server.key
 tls-auth tls-auth.key 0
 dh dh.pem
-plugin /etc/openvpn/openvpn-auth-pam.so /etc/pam.d/login
+tls-auth tls-auth.key 0
+client-cert-not-required
 username-as-common-name
+plugin /usr/lib/openvpn/openvpn-plugin-auth-pam.so login
 server 192.168.100.0 255.255.255.0
 ifconfig-pool-persist ipp.txt
 persist-key
